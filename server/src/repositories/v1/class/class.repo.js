@@ -1,5 +1,5 @@
 
-
+import ErrorHandler from "../../../utils/ErrorHandler.js";
 class  ClassRepositiory {
     constructor(classModel){
         this.classModel = classModel;
@@ -19,8 +19,20 @@ class  ClassRepositiory {
             return result;
         }
 
-        findClassByCode = async (classCode) => {
-            const result = await this.classModel.findOne({classCode: classCode})
+        findClassByCode = async (data) => {
+            let result;
+
+            const {assignedRole, joiningCode} = data
+            if(assignedRole === "student"){
+                result = await this.classModel.findOne({studentCode: joiningCode})
+            }else if(assignedRole === "teacher"){
+                result = await this.classModel.findOne({teacherCode: joiningCode})
+            }else{
+                throw new ErrorHandler("Invalid role", 400);
+            }
+            
+            
+    
             return result;
         }
 

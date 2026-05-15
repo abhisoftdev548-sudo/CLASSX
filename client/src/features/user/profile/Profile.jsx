@@ -13,6 +13,7 @@ import {
 import { AuthContext } from '../../auth/context/AuthContext';
 import { Navigate, useNavigate } from 'react-router-dom';
 import useAuth from '../../auth/hooks/useAuth';
+import Avatar from '../../../components/Avatar';
 
 const ProfilePage = () => {
 const navigate = useNavigate()
@@ -81,11 +82,7 @@ const navigate = useNavigate()
             >
               <div className="avatar placeholder mb-6">
                 <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-primary to-secondary p-[2px]">
-                  <div className="w-full h-full rounded-[1.4rem] bg-base-300 flex items-center justify-center">
-                    <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-primary to-secondary">
-                      {name.split(' ').map(n => n[0]).join('')}
-                    </span>
-                  </div>
+                  <Avatar avatarUrl={user?.avatarUrl} name={name} size="xl" />
                 </div>
               </div>
               <h2 className="text-2xl font-black tracking-tight">{name}</h2>

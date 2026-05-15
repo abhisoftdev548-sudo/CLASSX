@@ -8,11 +8,15 @@ import ForgetPasswordPage from "../features/auth/forget_password/ForgetPasswordP
 import ResetPasswordPage from "../features/auth/ResetPassword/ResetPasswordPage";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
+import ProtectedClassRoute from "./ProtectedClassRoute";
 import Dashboard from "../features/user/Dashboard/Dashboard";
 import ProfileTab from "../features/user/Dashboard/components/ProfileTab";
 import JoinedClasses from "../features/user/Dashboard/components/JoinedClasses";
 import CreatedClasses from "../features/user/Dashboard/components/CreatedClasses";
 import ClassDashboard from "../features/classroom/ClassDashboard";
+import MembersPage from "../features/classroom/components/MembersPage";
+import ManageStudentsPage from "../features/classroom/components/ManageStudentsPage";
+import ChatTab from "../features/classroom/components/ChatTab";
 
 
 const router = createBrowserRouter([
@@ -88,7 +92,26 @@ const router = createBrowserRouter([
         element: (
         <ProtectedRoute>
             <ClassDashboard/>
-        </ProtectedRoute>)
+        </ProtectedRoute>
+        ),
+        children: [
+            {
+                index: true,
+                element: <MembersPage/>
+            },
+            {
+                path: 'members',
+                element: <MembersPage/>
+            },
+            {
+                path: 'chat',
+                element: <ChatTab/>
+            },
+            {
+                path: 'manage-students',
+                element: <ProtectedClassRoute><ManageStudentsPage/></ProtectedClassRoute>
+            }
+        ]
     }
 ])
 

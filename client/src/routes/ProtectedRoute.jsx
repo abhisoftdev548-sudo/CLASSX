@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import useAuth from '../features/auth/hooks/useAuth';
 import { onIdTokenChanged } from 'firebase/auth';
 import { auth } from '../config/firebase.config';
@@ -7,16 +7,20 @@ import { auth } from '../config/firebase.config';
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isInitialized, firebaseLoginSync } = useAuth();
   const [firebaseChecked, setFirebaseChecked] = useState(false);
+  const firebaseSyncInProgress = useRef(false);
 
   useEffect(() => {
     // Sync Firebase session with backend if needed
     const unsubscribe = onIdTokenChanged(auth, async (user) => {
-      if (user && !isAuthenticated && isInitialized) {
+      if (user && !isAuthenticated && isInitialized && !firebaseSyncInProgress.current) {
+        firebaseSyncInProgress.current = true;
         try {
           const idToken = await user.getIdToken();
           await firebaseLoginSync(idToken);
         } catch (error) {
           console.error("Firebase sync error", error);
+        } finally {
+          firebaseSyncInProgress.current = false;
         }
       }
       setFirebaseChecked(true);

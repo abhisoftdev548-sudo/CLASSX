@@ -6,38 +6,12 @@ import * as z from "zod";
 
 export const validate = (schema) => (req, res, next) => {
 
-  // Debug logging to identify the issue
-
-  console.log(' Validate Middleware Debug:');
-  console.log("req", req)
-  console.log("req cookie", req.cookies)
-
-  console.log('Request Body:', req.body);
-
-  console.log('Content-Type:', req.get('Content-Type'));
-
-  console.log('Method:', req.method);
-
-  console.log('URL:', req.url);
-
-  console.log('Raw Headers:', JSON.stringify(req.headers, null, 2));
-
-  console.log('Has Body:', !!req.body);
-
-  console.log('Body Type:', typeof req.body);
-
-  console.log('Body Keys:', req.body ? Object.keys(req.body) : 'N/A');
-
-
-
   try {
 
     // Check if req.body exists
 
     if (!req.body) {
-
-      console.log(' Request body is undefined');
-
+      console.log("Request body is missing");
       return res.status(400).json({
 
         success: false,
@@ -56,14 +30,13 @@ export const validate = (schema) => (req, res, next) => {
 
     schema.parse(req.body); 
 
-    console.log(' Validation Passed');
-
     next();
 
   } catch (error) {
+    console.log("Validation error:", error);
 
     if (error instanceof z.ZodError) {
-
+      console.log("Zod error details:", error.errors);
       return res.status(400).json({
 
         success: false,

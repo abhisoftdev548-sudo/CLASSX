@@ -1,7 +1,7 @@
 import express from 'express'
 import authController from '../../controllers/v1/auth.controllers.js';
 import authMiddleware from '../../middlewares/auth.middleware.js';
-import { authLimiter, sensitiveTaskLimiter } from '../../middlewares/rateLimitng.middleware.js';
+import { authLimiter, sensitiveTaskLimiter, googleAuthLimiter } from '../../middlewares/rateLimitng.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
 import { forgetPasswordSchema, loginSchema, ragisterSchema, resetPasswordSchema,  verifyEmailOtpSchema } from '../../validations/auth.validation.js';
 
@@ -17,6 +17,6 @@ authRouter.post('/send-email-varification-otp', sensitiveTaskLimiter, authContro
 authRouter.post('/verify-email-otp', validate(verifyEmailOtpSchema), authController.verifyEmailOtp);
 authRouter.post('/forget-password', validate(forgetPasswordSchema), sensitiveTaskLimiter, authController.forgetPassword);
 authRouter.post('/reset-password/:resetPasswordToken', validate(resetPasswordSchema), authController.resetPassword);
-authRouter.post('/google-sync', authController.googleAuthSync);
+authRouter.post('/google-sync', googleAuthLimiter, authController.googleAuthSync);
 
 export default authRouter;

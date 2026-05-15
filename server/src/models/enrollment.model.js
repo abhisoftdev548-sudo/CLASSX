@@ -22,11 +22,29 @@ const enrollMentSchema = new mongoose.Schema({
     },
     branch: {
         type: String,
-        trim: true
+        trim: true,
+        default: null
     },
+    status: {
+        type: String,
+        enum: ["pending", "accepted", "rejected", "cancelled"],
+        required: true,
+        default: "pending"
+    },
+    acceptedAt: {
+        type: Date,
+        trim: true,
+        default: null
+    },
+
     joinedAt: {
         type: Date,
         trim: true
+    },
+    canceledAt: {
+        type: Date,
+        trim: true,
+        default: null
     }
 }, {timestamps: true})
 
