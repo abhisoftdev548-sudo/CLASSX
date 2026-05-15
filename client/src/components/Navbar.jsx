@@ -4,7 +4,10 @@ import { PiBookOpenBold, PiSignInBold, PiLayoutBold } from "react-icons/pi";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { IoClose, IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
-const Navbar = ({ isDarkMode, toggleTheme }) => {
+import { useTheme } from '../App';
+
+const Navbar = () => {
+  const { isDarkMode, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 

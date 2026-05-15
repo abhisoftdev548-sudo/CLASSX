@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useState, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { authService } from "../api/authServices";
 import toast from "react-hot-toast";
@@ -25,10 +25,14 @@ const useAuth = () => {
     setLoading,
   } = context;
 
+  // Throttle for Google auth to prevent rapid requests
+  const googleAuthThrottleRef = useRef(false);
+
   const initAuth = useCallback(async () => {
     setLoading(true);
     try {
       const { response, error } = await authService.getUser();
+      console.log(response, error);
       if (error) {
         // Just set unauthenticated state, no need to throw
         setUser(null);
@@ -47,9 +51,18 @@ const useAuth = () => {
   }, [setUser, setIsAuthenticated, setIsInitialized, setLoading]);
 
   const firebaseLoginSync = async (idToken) => {
+    // Prevent multiple simultaneous Google auth requests
+    if (googleAuthThrottleRef.current) {
+      console.log("Google auth request already in progress, skipping...");
+      return;
+    }
+
+    googleAuthThrottleRef.current = true;
+
     try {
       setLoading(true);
       const { response, error } = await authService.googleSync(idToken);
+      console.log(response, error);
       if (error) {
         throw new Error(error || "Google sync failed.");
       }
@@ -60,12 +73,15 @@ const useAuth = () => {
         navigate('/profile');
       }
     } catch (error) {
-      console.error("Google Sync Failed:", error);
       setUser(null);
       setIsAuthenticated(false);
       toast.error(error.message);
     } finally {
       setLoading(false);
+      // Reset throttle after a short delay
+      setTimeout(() => {
+        googleAuthThrottleRef.current = false;
+      }, 2000);
     }
   };
 
@@ -73,8 +89,8 @@ const useAuth = () => {
     try {
       setLoading(true);
       const { response, error } = await authService.login(data);
-      console.log(response)
-      if (error) {
+      console.log(response, error);
+            if (error) {
         throw new Error(error || "Login failed, please try again.");
       }
       if(response?.data?.status === "verified"){
@@ -91,7 +107,6 @@ const useAuth = () => {
       }
 
     } catch (error) {
-      console.error("Login Failed:", error);
       setUser(null);
       setIsAuthenticated(false);
       toast.error(error.message);
@@ -105,7 +120,7 @@ const useAuth = () => {
       setLoading(true);
 
       const { response, error } = await authService.register(data);
-      console.log(response);
+      console.log(response, error);
       if (error) {
         throw new Error(error || "registration failed, please try again.");
       }
@@ -114,8 +129,6 @@ const useAuth = () => {
 
       navigate("/verify-email");
     } catch (error) {
-      console.error("Ragistration Failed:", error);
-
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -126,13 +139,11 @@ const useAuth = () => {
     try {
       setLoading(true);
       const requestData = {otp};
-      console.log(requestData)
       const { response, error } = await authService.verifyEmail(requestData);
+      console.log(response, error);
       if (error) {
         throw new Error(error.message);
       }
-      console.log(response)
-      console.log(response.data)
 
       const userData = {
         name: response.data.name,
@@ -143,10 +154,8 @@ const useAuth = () => {
       setUser(userData);
       setIsAuthenticated(true);
       toast.success("User Verified successfully");
-      console.log(user)
       navigate("/profile");
     } catch (error) {
-      console.error("Login Failed:", error);
       setUser(null);
       setIsAuthenticated(false);
       toast.error(error.message);
@@ -159,6 +168,7 @@ const useAuth = () => {
     try {
       setLoading(true);
       const { response, error } = await authService.logout();
+      console.log(response, error);
       if (error) {
         throw new Error(error.message);
       }
@@ -171,7 +181,6 @@ const useAuth = () => {
       toast.success(response.message);
       navigate("/login");
     } catch (error) {
-      console.error("Logout Failed:", error);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -182,13 +191,12 @@ const useAuth = () => {
     try {
       setLoading(true);
       const { response, error } = await authService.sendEmailVarificationOtp();
-      console.log(response)
-      if (error) {
+      console.log(response, error);
+            if (error) {
         throw new Error(error.message);
       }
       toast.success(response.message);
     } catch (error) {
-      console.error("Logout Failed:", error);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -205,7 +213,6 @@ const useAuth = () => {
       toast.success(response.message);
       return true;
     } catch (error) {
-      console.error("Forget Password Failed:", error);
       toast.error(error.message);
       return false;
     } finally {

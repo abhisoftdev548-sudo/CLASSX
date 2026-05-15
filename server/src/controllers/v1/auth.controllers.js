@@ -71,6 +71,7 @@ res.cookie("AccessToken", accessToken, {
         mobileNumber: user.mobileNumber,
         verified: user.verified,
         status: user.status,
+        avatarUrl: user.avatarUrl,
         accessToken: accessToken
     }
     return res.status(200).json(new ApiResponse(200, responseUserData, "User Logged In successfully"))
@@ -90,7 +91,8 @@ const getMe = catchAsyncError(async (req, res, next) => {
         email: user.email,
         mobileNumber: user.mobileNumber,
         verified: user.verified,
-        status: user.status
+        status: user.status,
+        avatarUrl: user.avatarUrl
     }
 
     return res.status(200).json(new ApiResponse(200, responseUserData, "User get Successfully"))
@@ -175,7 +177,6 @@ const sendEmailVarificationOtp = catchAsyncError(async (req, res, next) => {
 
 const verifyEmailOtp = catchAsyncError(async (req, res, next) => {
     const {otp} = req.body;
-    console.log(req.body)
     const tempToken = req.cookies.TempToken
     const userAgent = req.headers["user-agent"];
     const ip = req.ip;
@@ -203,7 +204,6 @@ res.cookie("AccessToken", accessToken, {
         maxAge: 15 * 60 * 1000
     });
 
-console.log("users", user)
     const responseData = {
         id: user.id,
         name: user.name,
@@ -211,6 +211,7 @@ console.log("users", user)
         mobileNumber: user.mobileNumber,
         verified: user.verified,
         status: user.status,
+        avatarUrl: user.avatarUrl,
         accessToken: accessToken
     }
 
@@ -271,6 +272,7 @@ const googleAuthSync = catchAsyncError(async (req, res, next) => {
         mobileNumber: user.mobileNumber,
         verified: user.verified,
         status: user.status,
+        avatarUrl: user.avatarUrl,
         accessToken: accessToken
     }
     return res.status(200).json(new ApiResponse(200, responseUserData, "Google Auth Synced Successfully"))

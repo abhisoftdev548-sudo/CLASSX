@@ -62,17 +62,21 @@ class AuthServices {
     if (!user) {
       throw new ErrorHandler("User not found", 400);
     }
-    if (!user.password && user.googleId) {
+
+    let isValidPassword;
+    try {
+      isValidPassword = await this.userModel.comparePassword(
+        email,
+        password,
+      );
+    } catch (err) {
+      // If password field is missing (Google-only account), bcrypt.compare will fail.
+      // Provide a user-friendly message.
       throw new ErrorHandler(
-        "This account was created using Google. Please click 'Continue with Google' to log in, or use 'Forgot Password' to create a password.",
+        "No password set for this account. Use Google Sign-In or reset password via 'Forgot Password'.",
         400,
       );
     }
-
-    const isValidPassword = await this.userModel.comparePassword(
-      email,
-      password,
-    );
 
     if (!isValidPassword) {
       throw new ErrorHandler("Invalid password", 400);
@@ -204,12 +208,10 @@ class AuthServices {
     if (!tempToken || !otp || !userAgent || !ip) {
       throw new ErrorHandler("All fields are required", 400);
     }
-    console.log(tempToken)
     const decoded = await this.tokenServices.verifyTempToken(tempToken);
-    console.log(decoded)
     const email = decoded.email;
-    console.log(email)
     const user = await this.userModel.findByEmail(email);
+    console.log("verifyEmailOtp user:", user);
 
     if (!user) {
       throw new ErrorHandler("User not found", 400);
@@ -260,7 +262,7 @@ class AuthServices {
     }
 
     const resetPasswordToken = await this.userModel.generateResetToken(email);
-    console.log(resetPasswordToken);
+    console.log("resetPasswordToken generated for:", email);
 
     await this.mailTokenService.sendToken(resetPasswordToken, user);
 

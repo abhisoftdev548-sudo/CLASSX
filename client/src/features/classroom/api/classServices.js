@@ -4,7 +4,7 @@ import { axiosInstance } from "../../../api/axiosInstance"
 
 export const classService = {
 
-    create: (data) => {
+    createClass: (data) => {
         return apiHandler(axiosInstance.post('/class/create-class', data))
     },
 
@@ -14,5 +14,17 @@ export const classService = {
 
     getClass: (enrollmentId) => {
         return apiHandler(axiosInstance.get(`/class/get-class/${enrollmentId}`))
+    },
+
+    joinClass: (data) => {
+        return apiHandler(axiosInstance.post('/class/join-class', data))
+    },
+
+    getAllMembers: (classId) => {
+        return apiHandler(axiosInstance.get(`/class/get-all-members?classId=${classId}`))
+    },
+
+    getAllStudents: (branch) => {
+        return apiHandler(axiosInstance.get(`/class/get-all-students?branch=${branch || ''}`))
     }
 }

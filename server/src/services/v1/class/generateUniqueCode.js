@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import classModel from '../../../models/class.model.js'; // Tumhara model
+import classModel from '../../../models/class.model.js '; // Tumhara model
 
 const generateUniqueCode = async (prefix) => {
     let isUnique = false;

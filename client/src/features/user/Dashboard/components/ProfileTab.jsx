@@ -1,5 +1,6 @@
 import React from 'react'
 import  useAuth  from '../../../auth/hooks/useAuth';
+import Avatar from '../../../../components/Avatar';
 const ProfileTab = () => {
   const {logout, logoutFromAllDevices, user, loading} = useAuth();
 
@@ -9,9 +10,11 @@ const ProfileTab = () => {
       <h2 className='text-4xl font-bold text-primary mb-6'>Your Profile</h2>
 
       <div className='flex items-center gap-5 mb-6'>
-        <div className='h-20 w-20 rounded-full border border-primary flex items-center justify-center text-2xl font-bold capitalize text-base-100 bg-primary/20'>{user.name.slice(0,2)}</div>
+        <div className='w-16 h-16 md:w-20 md:h-20'>
+          <Avatar avatarUrl={user?.avatarUrl} name={user?.name} size="responsive" />
+        </div>
         <div>
-            <h3 className='text-3xl font-black text-secondary'>{user?.name}</h3>
+            <h3 className='text-2xl md:text-3xl font-black text-secondary'>{user?.name}</h3>
         </div>
       </div>
       
