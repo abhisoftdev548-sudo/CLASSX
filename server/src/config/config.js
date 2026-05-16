@@ -21,6 +21,7 @@ const config = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+
     path: '/',
   },
 
@@ -36,4 +37,5 @@ const config = {
     return transporter;
   },
 };
+
 export default config;
