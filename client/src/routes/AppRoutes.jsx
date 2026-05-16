@@ -6,6 +6,7 @@ import ProfilePage from "../features/user/profile/Profile";
 import VerifyEmailPage from "../features/auth/verifyEmail/VerifyEmailPage";
 import ForgetPasswordPage from "../features/auth/forget_password/ForgetPasswordPage";
 import ResetPasswordPage from "../features/auth/ResetPassword/ResetPasswordPage";
+import DebugCookies from "../pages/DebugCookies";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import ProtectedClassRoute from "./ProtectedClassRoute";
@@ -87,6 +88,13 @@ const router = createBrowserRouter([
             <ResetPasswordPage/>
         </PublicRoute>)
     },
+        {
+            path: '/debug-cookies',
+            element: (
+            <PublicRoute>
+                <DebugCookies/>
+            </PublicRoute>)
+        },
     {
         path: '/class/:enrollmentId',
         element: (
