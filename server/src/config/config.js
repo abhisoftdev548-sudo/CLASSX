@@ -20,7 +20,7 @@ const config = {
   cookieOption: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: 'none',
     path: '/',
   },
 
@@ -36,4 +36,5 @@ const config = {
     return transporter;
   },
 };
+
 export default config;
